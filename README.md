@@ -17,52 +17,83 @@ Projeto acadêmico em Java orientado a objetos com 3 cadastros CRUD:
 mvn spring-boot:run
 ```
 
-Acesse no navegador:
+A API fica disponível em:
 
 - http://localhost:8080
+
+Use um cliente HTTP como `curl`, Postman ou o front-end separado para consumir os endpoints.
 
 ## Estrutura
 
 - `src/main/java/br/com/trio/sistema/model` -> entidades de domínio
-- `src/main/java/br/com/trio/sistema/controller` -> controllers MVC
+- `src/main/java/br/com/trio/sistema/controller` -> controllers REST API
 - `src/main/java/br/com/trio/sistema/service` -> regras de negócio e estratégias de validação
 - `src/main/java/br/com/trio/sistema/repository` -> abstração e implementação de repositório em memória
 - `src/main/java/br/com/trio/sistema/config` -> configuração de serviços e fábrica
 
-## Padrões: MVC e Camadas (Layers)
+## Padrões: Camadas (Layers)
 
-O projeto já está organizado segundo os padrões MVC e por camadas. A seguir um mapeamento direto entre camadas e arquivos do código:
+O projeto já está organizado por camadas. A seguir um mapeamento direto entre camadas e arquivos do código:
 
 - **Model (Domínio):** [src/main/java/br/com/trio/sistema/model/Cliente.java](src/main/java/br/com/trio/sistema/model/Cliente.java)
-- **View (Apresentação):** templates Thymeleaf em [src/main/resources/templates](src/main/resources/templates) (por exemplo [templates/clientes/lista.html](src/main/resources/templates/clientes/lista.html))
-- **Controller (Apresentação / Web):** controllers que retornam views em [src/main/java/br/com/trio/sistema/controller/ClienteController.java](src/main/java/br/com/trio/sistema/controller/ClienteController.java)
+- **Controller (API):** controllers REST em [src/main/java/br/com/trio/sistema/controller/api/ClienteApiController.java](src/main/java/br/com/trio/sistema/controller/api/ClienteApiController.java)
 - **Service (Camada de negócios):** `CadastroService` em [src/main/java/br/com/trio/sistema/service/CadastroService.java](src/main/java/br/com/trio/sistema/service/CadastroService.java) encapsula regras e validações
 - **Repository (Persistência):** abstração e implementação em memória em [src/main/java/br/com/trio/sistema/repository/CrudRepository.java](src/main/java/br/com/trio/sistema/repository/CrudRepository.java) e [src/main/java/br/com/trio/sistema/repository/InMemoryCrudRepository.java](src/main/java/br/com/trio/sistema/repository/InMemoryCrudRepository.java)
 
-Para demonstrar a separação Front-Back (API back-end invocada por um front-end separado), foi adicionada uma API REST simples para `Cliente`:
+Para demonstrar a separação Front-Back (API back-end invocada por um front-end separado), foram adicionadas APIs REST para `Cliente`, `Produto` e `Funcionário`:
 
-- **API (Back-end REST):** [src/main/java/br/com/trio/sistema/controller/api/ClienteApiController.java](src/main/java/br/com/trio/sistema/controller/api/ClienteApiController.java)
+- **API Cliente:** [src/main/java/br/com/trio/sistema/controller/api/ClienteApiController.java](src/main/java/br/com/trio/sistema/controller/api/ClienteApiController.java)
+- **API Produto:** [src/main/java/br/com/trio/sistema/controller/api/ProdutoApiController.java](src/main/java/br/com/trio/sistema/controller/api/ProdutoApiController.java)
+- **API Funcionário:** [src/main/java/br/com/trio/sistema/controller/api/FuncionarioApiController.java](src/main/java/br/com/trio/sistema/controller/api/FuncionarioApiController.java)
 
 ## Separação Front / Back
 
-Este repositório agora contém uma pasta `frontend` com um pequeno cliente estático que consome a API REST do back-end.
+Este repositório agora contém uma pasta `frontend` com um cliente Web separado que consome as APIs do backend.
 
-- `frontend/index.html` + `frontend/app.js` -> exemplo de front-end separado (fetch para `/api/clientes`).
-- Para rodar localmente, execute o back-end (`mvn spring-boot:run`) e sirva a pasta `frontend` com um servidor estático (por exemplo `python -m http.server 5500`).
+- `frontend/index.html` + `frontend/app.js` -> front-end separado para Clientes, Produtos e Funcionários.
+- `frontend/style.css` -> estilo do frontend separado.
+- `frontend/package.json` -> comando `npm start` para rodar o front-end localmente.
 
-Exemplo de execução:
-```
-# Inicie o back-end na raiz do projeto
+### Executar localmente
+
+```bash
+# Inicie o backend na raiz do projeto
 mvn spring-boot:run
 
-# Em outra janela, sirva o frontend
+# Em outra janela, inicie o frontend
 cd frontend
-python -m http.server 5500
+npm install
+npm start
 
 # Abra http://localhost:5500 no navegador
 ```
 
-O back-end permite CORS para facilitar desenvolvimento (consulte `ClienteApiController` para detalhes).
+### Configurar a URL do backend
+
+Alterar `window.API_BASE_URL` em `frontend/index.html` para a URL do backend Railway, por exemplo:
+
+```html
+<script>window.API_BASE_URL = 'https://seu-app-name.up.railway.app';</script>
+```
+
+### Endpoints disponíveis
+
+- `GET /api/clientes`
+- `GET /api/clientes/{id}`
+- `POST /api/clientes/salvar`
+- `DELETE /api/clientes/{id}`
+
+- `GET /api/produtos`
+- `GET /api/produtos/{id}`
+- `POST /api/produtos/salvar`
+- `DELETE /api/produtos/{id}`
+
+- `GET /api/funcionarios`
+- `GET /api/funcionarios/{id}`
+- `POST /api/funcionarios/salvar`
+- `DELETE /api/funcionarios/{id}`
+
+O back-end permite CORS para facilitar desenvolvimento e consumo por um front-end separado.
 
 Como usar a API (exemplos):
 
