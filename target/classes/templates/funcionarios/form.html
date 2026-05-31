@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Funcionário</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h2>Formulário de Funcionário</h2>
+    <p class="erro" th:if="${erro}" th:text="${erro}"></p>
+    <form th:action="@{/funcionarios/salvar}" th:object="${funcionario}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <label>Nome</label>
+        <input type="text" th:field="*{nome}" required>
+        <label>Cargo</label>
+        <input type="text" th:field="*{cargo}" required>
+        <label>Salário</label>
+        <input type="number" step="0.01" th:field="*{salario}" required>
+        <button class="btn" type="submit">Salvar</button>
+        <a class="btn-secondary" href="/funcionarios">Voltar</a>
+    </form>
+</div>
+</body>
+</html>
